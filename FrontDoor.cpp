@@ -105,7 +105,7 @@ void resetBlinds(int index) {
 }
 
 // Window dimensions
-const GLuint WIDTH = 665, HEIGHT = 1080;
+const GLuint WIDTH = 450, HEIGHT = 600;
 GLuint cameraMode = 0; // 0 - Default, 1 - Front, 2- Side
 
 // The MAIN function, from here we start the application and run the game loop
@@ -801,6 +801,36 @@ int main()
         0.0f, -5.4f, -3.925f, 0.0f, 0.0f,
         0.0f, -5.4f, -4.0f, 1.0f, 0.0f,
         0.0f, -5.2f, -4.0f, 1.0f, 1.0f,
+
+
+
+        // Draw Frame Above Closet 1/2
+        4.075f, 3.0f, -3.8f, 0.5f, 1.0f,
+        4.075f, 3.0f, 0.0f, 1.0f, 1.0f,
+        4.075f, 2.75f, -3.8f, 0.5f, 0.5f,   
+        // Draw Frame Above Closet 2/2
+        4.075f, 2.75f, -3.8f, 0.5f, 0.5f,
+        4.075f, 2.75f, 0.0f, 1.0f, 0.5f,
+        4.075f, 3.0f, 0.0f, 1.0f, 1.0f,
+
+        // Draw Frame To the Side of Closet 1/2
+        4.075f, 3.0f, -3.8f, 0.5f, 1.0f,
+        4.075f, 3.0f, -3.5f, 1.0f, 1.0f,
+        4.075f, -5.5f, -3.8f, 0.5f, 0.5f,   
+        // Draw Frame To the Side of Closet 2/2
+        4.075f, -5.5f, -3.8f, 0.5f, 0.5f,
+        4.075f, -5.5f, -3.5f, 1.0f, 0.5f,
+        4.075f, 3.0f, -3.5f, 1.0f, 1.0f,
+
+        // Draw Closet Door 1/2
+        4.075f, 2.7f, -3.4f, 0.5f, 1.0f,
+        4.075f, 2.9f, 3.0f, 1.0f, 1.0f,
+        4.075f, -5.7f, -3.4f, 0.5f, 0.5f,   
+        // Draw Closet Door 2/2
+        4.075f, -5.5f, -3.4f, 0.5f, 0.5f,
+        4.075f, -5.5f, 3.0f, 1.0f, 0.5f,
+        4.075f, 2.7f, 3.0f, 1.0f, 1.0f,
+
         
         // Blender - Window Blind
         0.637499988079071f, 2.7866009943977588e-08f, 0.02499997243285179f, 0.0f, 0.0f,
@@ -1960,12 +1990,8 @@ int main()
         -3.451066017150879f, -1.0742640495300293f, -0.05000000074505806f, 0.0f, 1.0f,
         -3.4333884716033936f, -1.0389087200164795f, 0.02500000223517418f, 1.0f, 1.0f,
     };
-    GLfloat trackVertices[] = {
 
-
-        
-    };
-    // World space positions of our cubes
+    // World space positions of our objects
     glm::vec3 objectPositions[] = {
         glm::vec3(0.0f,  0.0f,  0.0f), // Scene
         glm::vec3(3.815f,  -0.55f,  -3.95f), // Front Door
@@ -2212,31 +2238,28 @@ int main()
         glDrawArrays(GL_TRIANGLES, 3 * 6, 7 * 6);  // Next 7 sets correspond to the walls
 
         glUniform1i(textureTypeLoc, 2);
-        glDrawArrays(GL_TRIANGLES, 10 * 6, 5 * 6);  // Next 5 sets correspond to the front door frame face
+        glDrawArrays(GL_TRIANGLES, 10 * 6, 5 * 6);  // Front Door Frame Triangles
+        glDrawArrays(GL_TRIANGLES, 15 * 6, 3 * 6); 
+        glDrawArrays(GL_TRIANGLES, 18 * 6, 3 * 6);  
 
-        glDrawArrays(GL_TRIANGLES, 15 * 6, 3 * 6);  // Next 3 sets correspond to the front door frame sides
-        glDrawArrays(GL_TRIANGLES, 18 * 6, 3 * 6);  // Next 3 sets correspond to the front door frame inner sides
-
-        glDrawArrays(GL_TRIANGLES, 21 * 6, 4 * 6);  // Next 4 sets correspond to the window frame sides
-
-        glDrawArrays(GL_TRIANGLES, 25 * 6, 8 * 6);  // Next 8 sets correspond to the window frame face's outer lip
-        
-        glDrawArrays(GL_TRIANGLES, 33 * 6, 8 * 6);  // Next 8 sets correspond to the window frame face's inner lip
-        
+        glDrawArrays(GL_TRIANGLES, 21 * 6, 4 * 6);  // Window Frame Triangles
+        glDrawArrays(GL_TRIANGLES, 25 * 6, 8 * 6); 
+        glDrawArrays(GL_TRIANGLES, 33 * 6, 8 * 6);  
         glDrawArrays(GL_TRIANGLES, 41 * 6, 8 * 6);
-        
         glDrawArrays(GL_TRIANGLES, 49 * 6, 8 * 6);
+        glDrawArrays(GL_TRIANGLES, 57 * 6, 5 * 6);
 
-        glDrawArrays(GL_TRIANGLES, 57 * 6, 5 * 6); // Side Panels
-
-        glUniform1i(textureTypeLoc, 4);
+        glUniform1i(textureTypeLoc, 4); // Front Wall Guard Triangles
         glDrawArrays(GL_TRIANGLES, 69 * 6, 3 * 6);
 
-        glUniform1i(textureTypeLoc, 1);
+        glUniform1i(textureTypeLoc, 2);
+        glDrawArrays(GL_TRIANGLES, 72 * 6, 3 * 6); // Closet Door Triangles
+
+        glUniform1i(textureTypeLoc, 1); // Door Seal Triangles
         glm::mat4 doorSeal = glm::mat4(1.0f);
         doorSeal = glm::translate(doorSeal, objectPositions[4]);
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(doorSeal));
-        glDrawArrays(GL_TRIANGLES, 170 * 6, 31 * 6);
+        glDrawArrays(GL_TRIANGLES, 173 * 6, 31 * 6);
 
         if (movingBlinds[0]) {
             switch(openTheBlinds[0]){
@@ -2265,7 +2288,7 @@ int main()
             windowBlind = glm::translate(windowBlind, objectPositions[2] + glm::vec3(0.0f, 0.3f * i, 0.0f));
             windowBlind = glm::rotate(windowBlind, glm::radians(windowAngle[0]), glm::vec3(1.0f, 0.0f, 0.0f));
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(windowBlind));
-            glDrawArrays(GL_TRIANGLES, 72 * 6, 62 * 6);
+            glDrawArrays(GL_TRIANGLES, 75 * 6, 62 * 6);
         }
         // Upper Blinds
         for (int i = 0; i < 10; i++) {
@@ -2273,7 +2296,7 @@ int main()
             windowBlind = glm::translate(windowBlind, objectPositions[3] + glm::vec3(0.0f, 0.3f * i, 0.0f));
             windowBlind = glm::rotate(windowBlind, glm::radians(windowAngle[1]), glm::vec3(1.0f, 0.0f, 0.0f));
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(windowBlind));
-            glDrawArrays(GL_TRIANGLES, 72 * 6, 62 * 6);
+            glDrawArrays(GL_TRIANGLES, 75 * 6, 62 * 6);
         }
 
         // Blind Rods
@@ -2283,7 +2306,7 @@ int main()
             glm::vec3 adjustedPos = glm::vec3(objectPositions[i+2] + blindOffset);
             windowRod = glm::translate(windowRod, adjustedPos);
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(windowRod));
-            glDrawArrays(GL_TRIANGLES, 134 * 6, 36 * 6);
+            glDrawArrays(GL_TRIANGLES, 137 * 6, 36 * 6);
         }
 
 
@@ -2309,7 +2332,7 @@ int main()
         glDrawArrays(GL_TRIANGLES, 67 * 6, 2 * 6);
         // Door Handle
         glUniform1i(textureTypeLoc, 5);
-        glDrawArrays(GL_TRIANGLES, 201 * 6, 63 * 6);
+        glDrawArrays(GL_TRIANGLES, 204 * 6, 63 * 6);
 
 
         // End of Drawing
