@@ -1,4 +1,4 @@
-// Compile: g++ main.cpp -o FrontFrontDoor -lglfw -lGL -lGLEW -lSOIL -lassimp
+// Compile: g++ main.cpp -o FrontDoorTest -lglfw -lGL -lGLEW -lSOIL -lassimp
 
 #include <iostream>  // iostream include
 
@@ -22,7 +22,7 @@
 #include "Camera.h" // Include Camera class
 #include "Model.h" // Include Model class
 
-const GLuint WIDTH = 400, HEIGHT = 533; // Global variables for width and height of window
+const GLuint WIDTH = 540, HEIGHT = 720; // Global variables for width and height of window
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode); // key_callback method
