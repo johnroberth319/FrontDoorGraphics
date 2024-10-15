@@ -30,3 +30,4 @@ void main() {
     vec3 result = (ambient + diffuse + specular) * frontDoorColor; // Calculate result
     FragColor = vec4(result, 1.0f); // Set FragColor output
 }
+

@@ -23,6 +23,7 @@
 #include "Model.h" // Include Model class
 
 const GLuint WIDTH = 540, HEIGHT = 720; // Global variables for width and height of window
+GLuint cameraMode = 0;
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode); // key_callback method
@@ -61,6 +62,18 @@ int main() {
     glViewport(0, 0, WIDTH, HEIGHT); // Define viewport dimensions
 
     glEnable(GL_DEPTH_TEST); // Set up OpenGL options
+
+    std::vector<std::string> objectNames = {"ObjectsByMaterial/BlackMatteObjects", "ObjectsByMaterial/BlackWoolObjects", "ObjectsByMaterial/BronzeObjects", "ObjectsByMaterial/DullBrownObjects", "ObjectsByMaterial/GoldObjects", "ObjectsByMaterial/LightWoodObjects", "ObjectsByMaterial/LightYellowObjects", "ObjectsByMaterial/MetalObjects", "ObjectsByMaterial/OrangeObjects", "ObjectsByMaterial/WhiteMatteObjects", "ObjectsByMaterial/whitePlasterObjects", "ObjectsByMaterial/WhitePlasticObjects", "ObjectsByMaterial/WhiteWoodObjects", "ObjectsByMaterial/WoodObjects", "ObjectsByMaterial/WoodTileObjects"};
+    std::vector<Shader> shaders;
+    std::vector<Model> models;
+
+    for(const auto& name : objectNames){
+        // Shader shader((name + ".vs").c_str(), (name + ".frag").c_str());
+        // shaders.emplace_back(shader);
+
+        Model model((name + ".obj").c_str());
+        models.emplace_back(model);
+    }
 
     // Shaders for Each Model
     Shader frontDoorShader("FrontDoor.vs", "FrontDoor.frag");
@@ -111,7 +124,8 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // Set background color
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear buffers
 
-        
+/////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+/*
         // Initialize Camera
         glm::mat4 view = glm::mat4(1.0f); // Initialize view to identity
         view = camera.GetViewMatrix(); // Set view based on camera
@@ -145,6 +159,70 @@ int main() {
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model)); // Pass moel to shader
 
         frontDoorModel.Draw(frontDoorShader); // Draw obj model
+*/
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+     for(size_t i = 0; i < models.size(); ++i){
+            frontDoorShader.Use();
+            glm::mat4 model = glm::mat4(1.0f);
+            GLint colorLoc = glGetUniformLocation(frontDoorShader.Program, "frontDoorColor");
+            GLint lightColorLoc = glGetUniformLocation(frontDoorShader.Program, "lightColor");
+            GLint lightPosLoc = glGetUniformLocation(frontDoorShader.Program, "lightPos");
+            GLint viewPosLoc = glGetUniformLocation(frontDoorShader.Program, "viewPos");
+
+            glUniform3f(colorLoc, 1.0f, 1.0f, 0.0f);
+            glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
+            glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
+            glUniform3f(viewPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
+
+            GLint modelLoc = glGetUniformLocation(frontDoorShader.Program, "model");
+            GLint viewLoc = glGetUniformLocation(frontDoorShader.Program, "view");
+            GLint projLoc = glGetUniformLocation(frontDoorShader.Program, "projection");
+
+            glm::mat4 view = glm::mat4(1.0f);
+            view = camera.GetViewMatrix();
+            glm::mat4 projection; 
+
+            switch(cameraMode) {
+                case 0:
+                    view = glm::translate(view, glm::vec3(-1.1f, -0.375f, -6.35f));
+                    view = glm::rotate(view, glm::radians(2.25f), glm::vec3(0.0f, 1.0f, 0.0f));
+                    projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
+                    break;
+                case 1:
+                    view = glm::translate(view, glm::vec3(-1.5f, 0.0f, -8.0f));
+                    projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
+                    break;
+                case 2:
+                    view = glm::translate(view, glm::vec3(3.0f, 0.0f, -9.0f));
+                    view = glm::rotate(view, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+                    projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
+                    break;
+                case 3:
+                    view = glm::translate(view, glm::vec3(3.8f, 0.0f, -6.0f));
+                    view = glm::rotate(view, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+                    projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
+                    break;
+                case 4:
+                    view = glm::translate(view, glm::vec3(-1.2f, -0.375f, -1.0f));
+                    view = glm::rotate(view, glm::radians(2.25f), glm::vec3(0.0f, 1.0f, 0.0f));
+                    projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
+                    break;
+            }
+
+
+            glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+            glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+            models[i].Draw(frontDoorShader);
+        }
+
+
+
+
+
 
         glBindVertexArray(0); // Bind zero at end
         glfwSwapBuffers(window); // Swap screen buffers
@@ -185,14 +263,14 @@ void do_movement() {
             camera.ProcessKeyboard(DOWNROLL, deltaTime); // Move camera in negative roll with callback
         }
     }
-    else if (keys[GLFW_KEY_LEFT_CONTROL] || keys[GLFW_KEY_RIGHT_CONTROL]) { // If either ctrl key is pressed
-        if (keys[GLFW_KEY_DOWN]) { // If down arrow
+    else if (true) { // If either ctrl key is pressed
+        if (keys[GLFW_KEY_W]) { // If down arrow
             camera.ProcessKeyboard(UPPITCH, deltaTime); // Move camera in positive pitch with callback
-        } else if (keys[GLFW_KEY_UP]) { // If up arrow
+        } else if (keys[GLFW_KEY_S]) { // If up arrow
             camera.ProcessKeyboard(DOWNPITCH, deltaTime); // Move camera in negative pitch with callback
-        } else if (keys[GLFW_KEY_RIGHT]) { // If right arrow
+        } else if (keys[GLFW_KEY_D]) { // If right arrow
             camera.ProcessKeyboard(UPYAW, deltaTime); // Move camera in positive yaw with callback
-        } else if (keys[GLFW_KEY_LEFT]) { // If left arrow
+        } else if (keys[GLFW_KEY_A]) { // If left arrow
             camera.ProcessKeyboard(DOWNYAW, deltaTime); // Move camera in negative yaw with callback
         }
     }
